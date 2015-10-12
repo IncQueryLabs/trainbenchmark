@@ -38,5 +38,4 @@ public class IQDCoreTransformationRepairConnectedSegments extends IQDCoreTransfo
 		}
 		input.processTransaction(transaction);
 	}
-
 }

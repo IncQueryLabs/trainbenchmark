@@ -13,6 +13,7 @@ package hu.bme.mit.trainbenchmark.benchmark.iqdcore.transformations;
 
 import hu.bme.mit.incquerydcore.WildcardInput;
 import hu.bme.mit.trainbenchmark.benchmark.benchmarkcases.transformations.Transformation;
+import hu.bme.mit.trainbenchmark.benchmark.iqdcore.driver.IQDCoreReader;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.transformations.repair.IQDCoreTransformationRepairConnectedSegments;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.transformations.repair.IQDCoreTransformationRepairPosLength;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.transformations.repair.IQDCoreTransformationRepairRouteSensor;
@@ -22,15 +23,16 @@ import hu.bme.mit.trainbenchmark.benchmark.iqdcore.transformations.repair.IQDCor
 import hu.bme.mit.trainbenchmark.constants.Query;
 import hu.bme.mit.trainbenchmark.constants.Scenario;
 
-public abstract class IQDCoreTransformation<M> extends Transformation<M> {
+public abstract class IQDCoreTransformation<TObject> extends Transformation<TObject, WildcardInput> {
 
 	protected WildcardInput input;
 
 	protected IQDCoreTransformation(final WildcardInput input) {
+		super(input);
 		this.input = input;
 	}
 
-	public static Transformation<?> newInstance(final WildcardInput input, final Query query, final Scenario scenario) {
+	public static Transformation<?, WildcardInput> newInstance(final WildcardInput input, final Query query, final Scenario scenario) {
 		switch (scenario) {
 		case BATCH:
 		case REPAIR:

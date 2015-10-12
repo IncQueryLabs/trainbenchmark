@@ -14,12 +14,16 @@ package hu.bme.mit.trainbenchmark.benchmark.iqdcore;
 
 import java.io.IOException;
 
+import hu.bme.mit.trainbenchmark.benchmark.iqdcore.config.IQDCoreBenchmarkConfig;
+import hu.bme.mit.trainbenchmark.benchmark.rdf.RDFBenchmarkConfig;
+import hu.bme.mit.trainbenchmark.benchmark.scenarios.BenchmarkRunner;
 import org.apache.commons.cli.ParseException;
 
 public class IQDCoreBenchmarkMain {
 
-	public static void main(String[] args) throws IOException, ParseException {
-		IQDCoreBenchmarkLogic benchmarkLogic = new IQDCoreBenchmarkLogic(args);
+	public static void main(String[] args) throws Exception {
+		final IQDCoreBenchmarkConfig benchmarkConfig = new IQDCoreBenchmarkConfig(args);
+		final BenchmarkRunner benchmarkLogic = new BenchmarkRunner(benchmarkConfig, new IQDCoreBenchmarkCase(benchmarkConfig));
 		benchmarkLogic.runBenchmark();
 		System.exit(0);
 		return;

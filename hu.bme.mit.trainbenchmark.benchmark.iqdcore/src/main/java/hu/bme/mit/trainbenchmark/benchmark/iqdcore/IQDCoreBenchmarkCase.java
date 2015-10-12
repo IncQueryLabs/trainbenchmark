@@ -12,12 +12,15 @@
 
 package hu.bme.mit.trainbenchmark.benchmark.iqdcore;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 
 import hu.bme.mit.incquerydcore.WildcardInput;
-import hu.bme.mit.trainbenchmark.benchmark.benchmarkcases.AbstractBenchmarkCaseRunner;
+import hu.bme.mit.trainbenchmark.benchmark.benchmarkcases.AbstractBenchmarkCase;
+import hu.bme.mit.trainbenchmark.benchmark.benchmarkcases.transformations.Transformation;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.benchmarkcases.IQDCoreChecker;
+import hu.bme.mit.trainbenchmark.benchmark.iqdcore.config.IQDCoreBenchmarkConfig;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.driver.IQDCoreReader;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.match.IQDCoreMatch;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.match.IQDCoreMatchComparator;
@@ -25,27 +28,53 @@ import hu.bme.mit.trainbenchmark.benchmark.iqdcore.transformations.IQDCoreTransf
 import hu.bme.mit.trainbenchmark.benchmark.rdf.RDFBenchmarkConfig;
 
 public class IQDCoreBenchmarkCase extends
-		AbstractBenchmarkCaseRunner<IQDCoreMatch, Long> {
+		AbstractBenchmarkCase<IQDCoreMatch, Long,  IQDCoreReader, IQDCoreBenchmarkConfig, IQDCoreChecker> {
+	private final IQDCoreBenchmarkConfig iqdbc;
 	protected WildcardInput iqdInput;
 	protected RDFBenchmarkConfig rdfbc;
-
-	@Override
-	protected void init() throws IOException {
-		this.rdfbc = (RDFBenchmarkConfig) bc;
+	protected IQDCoreChecker checker;
+	public IQDCoreBenchmarkCase(IQDCoreBenchmarkConfig config) {
 		int messageSize = 16;
 		iqdInput = new WildcardInput(messageSize);
-		IQDCoreChecker iqdCoreChecker= new IQDCoreChecker(iqdInput, rdfbc);
-		checker = iqdCoreChecker;
-		driver = new IQDCoreReader(rdfbc, iqdInput, iqdCoreChecker);
-		if (bc.getScenario().hasTranformation()) {
-			transformation = IQDCoreTransformation.newInstance(iqdInput,
-					bc.getQuery(), bc.getScenario());
+		iqdbc = config;
+		try {
+			checker = new IQDCoreChecker(iqdInput, iqdbc);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		setCPUAffinity();
+	}
+
+	public void setCPUAffinity() {
+		if (iqdbc.isCPURestricted()) {
+			String cpulist = iqdbc.getCpuList();
+			try {
+				int pid = Integer.parseInt(new File("/proc/self").getCanonicalFile().getName());
+				Runtime.getRuntime().exec(String.format("taskset -a -p -c %s %d", cpulist, pid));
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(-1);
+			}
 		}
 	}
 
 	@Override
-	protected Comparator<?> getMatchComparator() {
-		return new IQDCoreMatchComparator();
+	public IQDCoreReader createDriver(IQDCoreBenchmarkConfig benchmarkConfig) throws Exception {
+		return new IQDCoreReader(rdfbc, iqdInput, checker);
 	}
 
+	@Override
+	public IQDCoreChecker createChecker(IQDCoreBenchmarkConfig benchmarkConfig, IQDCoreReader driver) throws Exception {
+		return checker;
+	}
+
+	@Override
+	public Transformation<?, ?> createTransformation(IQDCoreBenchmarkConfig benchmarkConfig, IQDCoreReader driver) throws IOException {
+		return IQDCoreTransformation.newInstance(iqdInput, benchmarkConfig.getQuery(), benchmarkConfig.getScenario());
+	}
+
+	@Override
+	public Comparator<?> createMatchComparator() {
+		return new IQDCoreMatchComparator();
+	}
 }

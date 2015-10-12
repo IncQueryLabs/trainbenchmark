@@ -12,19 +12,21 @@
 
 package hu.bme.mit.trainbenchmark.benchmark.iqdcore.noinferencing.test;
 
-import hu.bme.mit.trainbenchmark.benchmark.iqdcore.IQDCoreBenchmarkLogic;
+import hu.bme.mit.trainbenchmark.benchmark.iqdcore.IQDCoreBenchmarkCase;
+import hu.bme.mit.trainbenchmark.benchmark.iqdcore.config.Checker;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.config.IQDCoreBenchmarkConfig;
+import hu.bme.mit.trainbenchmark.benchmark.scenarios.BenchmarkRunner;
 import hu.bme.mit.trainbenchmark.benchmark.test.TestBenchmarkInitializer;
 import hu.bme.mit.trainbenchmark.constants.Query;
 import hu.bme.mit.trainbenchmark.constants.Scenario;
 
-public class IQDCoreBenchmarkNoInferencingInitializer extends TestBenchmarkInitializer<IQDCoreBenchmarkLogic> {
+public class IQDCoreBenchmarkNoInferencingInitializer extends TestBenchmarkInitializer {
 
 	@Override
-	protected IQDCoreBenchmarkLogic initializeBenchmark(final Query query, final Scenario scenario) {
-		final IQDCoreBenchmarkConfig rbc = new IQDCoreBenchmarkConfig(scenario, size, 1, query, iterationCount, transformationStrategy,
+	protected BenchmarkRunner initializeBenchmark(final Query query, final Scenario scenario) {
+		final IQDCoreBenchmarkConfig iqdbc = new IQDCoreBenchmarkConfig(scenario, size, 1, query, iterationCount, transformationStrategy,
 				transformationConstant, null);
-		return new IQDCoreBenchmarkLogic(rbc);
+		return new BenchmarkRunner(iqdbc, new IQDCoreBenchmarkCase(iqdbc));
 	}
 
 }
