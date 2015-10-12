@@ -34,8 +34,7 @@ public class IQDCoreBenchmarkCase extends
 	protected RDFBenchmarkConfig rdfbc;
 	protected IQDCoreChecker checker;
 	public IQDCoreBenchmarkCase(IQDCoreBenchmarkConfig config) {
-		int messageSize = 16;
-		iqdInput = new WildcardInput(messageSize);
+		iqdInput = new WildcardInput(config.getMessageSize());
 		iqdbc = config;
 		try {
 			checker = new IQDCoreChecker(iqdInput, iqdbc);

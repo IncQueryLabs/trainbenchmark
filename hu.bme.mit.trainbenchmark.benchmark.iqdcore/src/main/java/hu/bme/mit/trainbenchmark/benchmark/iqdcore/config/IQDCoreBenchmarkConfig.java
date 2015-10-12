@@ -23,8 +23,10 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
 	protected static final String IQDCORE = "IQDCore";
 	protected static final String CPULIST = "cpulist";
 	protected static final String CHECKER = "checker";
+	protected static final String MESSAGESIZE = "messagesize";
 	protected String cpulist;
 	protected Checker checker;
+	protected int messageSize;
 
 	public IQDCoreBenchmarkConfig(final String[] args) throws ParseException {
 		super(args, IQDCORE);
@@ -33,11 +35,13 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
 	public IQDCoreBenchmarkConfig(final Scenario scenario, final int size,
 			final int runIndex, final Query query, final int iterationCount,
 			final TransformationStrategy transformationStrategy,
-			final long transformationConstant, final String cpulist, final Checker checker) {
+			final long transformationConstant, final String cpulist, final Checker checker,
+                                  int messageSize) {
 		super(IQDCORE, scenario, size, runIndex, query, iterationCount,
 				transformationStrategy, transformationConstant, false);
 		this.cpulist = cpulist;
 		this.checker = checker;
+        this.messageSize = messageSize;
 	}
 
 	@Override
@@ -46,6 +50,7 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
 
 		options.addOption(CPULIST, true, "uses the passed cores only");
 		options.addOption(CHECKER, true, "checker configuration");
+		options.addOption(MESSAGESIZE, true, "number of messages sent in one ChangeSet");
 	}
 
 	@Override
@@ -57,6 +62,12 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
 					.valueOf(cmd.getOptionValue(CHECKER).toUpperCase());
 		} else {
 			checker = Checker.LOCAL;
+		}
+
+		if (cmd.hasOption(MESSAGESIZE)) {
+			messageSize = new Integer(cmd.getOptionValue(MESSAGESIZE));
+		} else {
+			messageSize = 16;
 		}
 	}
 
@@ -70,6 +81,7 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
 	public Checker getChecker() {
 		return checker;
 	}
+    public int getMessageSize() { return messageSize; }
 	@Override
 	public String getToolName() {
 		if (isCPURestricted()) {
