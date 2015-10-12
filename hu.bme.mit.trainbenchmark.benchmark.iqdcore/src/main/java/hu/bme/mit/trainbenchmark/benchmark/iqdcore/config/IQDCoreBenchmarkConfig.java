@@ -22,18 +22,22 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
 
 	protected static final String IQDCORE = "IQDCore";
 	protected static final String CPULIST = "cpulist";
-
+	protected static final String CHECKER = "checker";
 	protected String cpulist;
+	protected Checker checker;
 
 	public IQDCoreBenchmarkConfig(final String[] args) throws ParseException {
 		super(args, IQDCORE);
 	}
 
-	public IQDCoreBenchmarkConfig(final Scenario scenario, final int size, final int runIndex, final Query query,
-			final int iterationCount, final TransformationStrategy transformationStrategy, final long transformationConstant,
-			final String cpulist) {
-		super(IQDCORE, scenario, size, runIndex, query, iterationCount, transformationStrategy, transformationConstant, false);
+	public IQDCoreBenchmarkConfig(final Scenario scenario, final int size,
+			final int runIndex, final Query query, final int iterationCount,
+			final TransformationStrategy transformationStrategy,
+			final long transformationConstant, final String cpulist, final Checker checker) {
+		super(IQDCORE, scenario, size, runIndex, query, iterationCount,
+				transformationStrategy, transformationConstant, false);
 		this.cpulist = cpulist;
+		this.checker = checker;
 	}
 
 	@Override
@@ -41,24 +45,33 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
 		super.initOptions();
 
 		options.addOption(CPULIST, true, "uses the passed cores only");
+		options.addOption(CHECKER, true, "checker configuration");
 	}
 
 	@Override
 	public void processArguments(final String[] args) throws ParseException {
 		super.processArguments(args);
 		cpulist = cmd.getOptionValue(CPULIST);
+		if (cmd.hasOption(CHECKER)) {
+			checker = Checker
+					.valueOf(cmd.getOptionValue(CHECKER).toUpperCase());
+		} else {
+			checker = Checker.LOCAL;
+		}
 	}
 
 	public boolean isCPURestricted() {
 		return cpulist != null;
 	}
-	
+
 	public String getCpuList() {
 		return cpulist;
 	}
-
+	public Checker getChecker() {
+		return checker;
+	}
 	@Override
-	public String getTool() {
+	public String getToolName() {
 		if (isCPURestricted()) {
 			int coreCount = cpulist.split(",").length;
 			return String.format("IQDCore-%d", coreCount);

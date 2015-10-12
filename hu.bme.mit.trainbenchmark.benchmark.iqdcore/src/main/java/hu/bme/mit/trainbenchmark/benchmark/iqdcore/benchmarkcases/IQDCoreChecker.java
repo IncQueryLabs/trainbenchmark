@@ -17,13 +17,8 @@ import java.util.Collection;
 import java.util.List;
 
 import hu.bme.mit.incquerydcore.WildcardInput;
-import hu.bme.mit.incquerydcore.trainbenchmark.ConnectedSegments;
-import hu.bme.mit.incquerydcore.trainbenchmark.PosLength;
-import hu.bme.mit.incquerydcore.trainbenchmark.RouteSensor;
-import hu.bme.mit.incquerydcore.trainbenchmark.SemaphoreNeighbor;
-import hu.bme.mit.incquerydcore.trainbenchmark.SwitchSensor;
-import hu.bme.mit.incquerydcore.trainbenchmark.SwitchSet;
-import hu.bme.mit.incquerydcore.trainbenchmark.TrainbenchmarkQuery;
+import hu.bme.mit.incquerydcore.trainbenchmark.*;
+import hu.bme.mit.trainbenchmark.benchmark.iqdcore.config.IQDCoreBenchmarkConfig;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.match.IQDCoreMatch;
 import hu.bme.mit.trainbenchmark.benchmark.rdf.RDFBenchmarkConfig;
 import hu.bme.mit.trainbenchmark.benchmark.rdf.checkers.RDFChecker;
@@ -35,32 +30,17 @@ public class IQDCoreChecker extends RDFChecker<IQDCoreMatch> {
 	protected WildcardInput iqdInput;
 	protected TrainbenchmarkQuery checker;
 
-	public IQDCoreChecker(final WildcardInput iqdDriver, final RDFBenchmarkConfig rdfbc) throws IOException {
-		super(rdfbc);
+	public IQDCoreChecker(final WildcardInput iqdDriver, final IQDCoreBenchmarkConfig iqdbc) throws IOException {
+		super(iqdbc);
 		this.iqdInput = iqdDriver;
-		switch (rdfbc.getQuery()) {
-		case CONNECTEDSEGMENTS:
-			this.checker = new ConnectedSegments();
-			break;
-		case POSLENGTH:
-			this.checker = new PosLength();
-			break;
-		case ROUTESENSOR:
-			this.checker = new RouteSensor();
-			break;
-		case SEMAPHORENEIGHBOR:
-			this.checker = new SemaphoreNeighbor();
-			break;
-		case SWITCHSENSOR:
-			this.checker = new SwitchSensor();
-			break;
-		case SWITCHSET:
-			this.checker = new SwitchSet();
-			break;
-		default:
-			break;
+		ClassLoader classLoader = IQDCoreChecker.class.getClassLoader();
+		try {
+			String classname = String.format("hu.bme.mit.incquerydcore.trainbenchmark.%s%s",  iqdbc.getChecker(), iqdbc.getQuery());
+			this.checker = (TrainbenchmarkQuery) classLoader.loadClass(classname).newInstance();
+			iqdInput.subscribe(checker.inputLookup());
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			e.printStackTrace();
 		}
-		iqdInput.subscribe(checker.inputLookup());
 	}
 
 	@Override

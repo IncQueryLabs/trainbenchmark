@@ -25,7 +25,7 @@ public class IQDCoreBenchmarkNoInferencingInitializer extends TestBenchmarkIniti
 	@Override
 	protected BenchmarkRunner initializeBenchmark(final Query query, final Scenario scenario) {
 		final IQDCoreBenchmarkConfig iqdbc = new IQDCoreBenchmarkConfig(scenario, size, 1, query, iterationCount, transformationStrategy,
-				transformationConstant, null);
+				transformationConstant, null, Checker.LOCAL);
 		return new BenchmarkRunner(iqdbc, new IQDCoreBenchmarkCase(iqdbc));
 	}
 
