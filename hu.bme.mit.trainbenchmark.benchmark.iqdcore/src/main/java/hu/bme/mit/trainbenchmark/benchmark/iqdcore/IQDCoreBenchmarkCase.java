@@ -34,13 +34,7 @@ public class IQDCoreBenchmarkCase extends
 	protected RDFBenchmarkConfig rdfbc;
 	protected IQDCoreChecker checker;
 	public IQDCoreBenchmarkCase(IQDCoreBenchmarkConfig config) {
-		iqdInput = new WildcardInput(config.getMessageSize());
 		iqdbc = config;
-		try {
-			checker = new IQDCoreChecker(iqdInput, iqdbc);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		setCPUAffinity();
 	}
 
@@ -59,6 +53,12 @@ public class IQDCoreBenchmarkCase extends
 
 	@Override
 	public IQDCoreReader createDriver(IQDCoreBenchmarkConfig benchmarkConfig) throws Exception {
+        iqdInput = new WildcardInput(benchmarkConfig.getMessageSize());
+		try {
+			checker = new IQDCoreChecker(iqdInput, iqdbc);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return new IQDCoreReader(rdfbc, iqdInput, checker);
 	}
 
