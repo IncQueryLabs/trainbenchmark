@@ -29,6 +29,7 @@ public class IQDCoreReader extends Driver<Long> {
 	@Override
 	public void read(final String modelPathWithoutExtension) throws Exception {
 		reader.read(modelPathWithoutExtension + RDFHelper.getPostfix(false));
+		query.getQuery().getResults();
 	}
 
 	@Override

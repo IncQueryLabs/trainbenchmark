@@ -56,6 +56,10 @@ public class IQDCoreChecker extends RDFChecker<IQDCoreMatch> {
 		return matches;
 	}
 
+	public TrainbenchmarkQuery getQuery() {
+		return checker;
+	}
+	
 	public void shutdown() {
 		checker.shutdown();
 	}
