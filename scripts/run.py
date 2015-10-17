@@ -4,7 +4,7 @@ Created on Sep 28, 2014
 
 @author: Zsolt Kovari
 
-This script assumes that the required dependencies are available from either
+This script assumes that the required dependencies are available from either 
 the local Maven repository or the Maven Central Repository.
 """
 import subprocess
@@ -63,7 +63,7 @@ def generate(config, formats):
                 util.set_working_directory(path)
                 target = util.get_generator_jar(format)
                 for size in config["sizes"]:
-                    cmd = flatten(["java",
+                    cmd = flatten(["java", 
                          config["java_opts"],
                          "-jar", target,
                          "-scenario", scenario_name,
@@ -92,7 +92,7 @@ def measure(config):
             args = [""]
             if tool in config["benchmark_optional_arguments"]:
                 for optional_argument in config["benchmark_optional_arguments"][tool]:
-                    args.append(optional_argument)
+                    args.append("-" + optional_argument)
 
             for arg in args:
                 path = "./hu.bme.mit.trainbenchmark.benchmark.{TOOL}/".format(TOOL=tool)
@@ -101,7 +101,7 @@ def measure(config):
 
                 for query in config["queries"]:
                     for size in config["sizes"]:
-
+                        
                         # remove all files in the temporary results directory
                         prev_files = glob.glob('../results/json/*')
                         for f in prev_files:
@@ -113,7 +113,7 @@ def measure(config):
                               ", scenario: " + scenario_name +
                               ", query: " + query +
                               ", size: " + str(size) +
-                              (", argument: " + str(arg) if str(arg) != "" else ""))
+                              (", argument: " + arg if arg != "" else ""))
                         cmd = flatten(["java",
                                config["java_opts"],
                                "-jar", target,
@@ -123,7 +123,7 @@ def measure(config):
                                "-size", str(size),
                                transformation_arguments,
                                arg])
-
+                        
                         try:
                             subprocess.check_call(cmd, timeout=config["timeout"])
                         except subprocess.TimeoutExpired:
@@ -152,8 +152,8 @@ def send_mail(config):
         msg["Subject"] = "Train Benchmark measurement ready"
         msg["From"] = address
         msg["To"] = address
-
-        session = smtplib.SMTP(host)
+        
+        session = smtplib.SMTP(host)	 
         session.ehlo()
         session.starttls()
         session.login(address, password)
@@ -200,7 +200,7 @@ if __name__ == "__main__":
         args.build = True
         args.generate = True
         args.measure = True
-
+    
     if args.ci:
         build_ci()
     if args.build:

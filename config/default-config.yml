@@ -10,7 +10,7 @@ java_opts:
   - -Xmx2G
 
 # Number of runs for the same tool/scenario/query/size.
-runs: 5
+runs: 10
 
 # Timeout for the benchmark processes.
 timeout: 600
@@ -34,10 +34,10 @@ queries:
 # You may also specify the benchmark arguments for each scenario.
 scenarios:
 - Batch:
-- Inject:
-    transformationStrategy: fixed
-    transformationConstant: 10
-    iterationCount: 10
+#- Inject:
+#    transformationStrategy: fixed
+#    transformationConstant: 10
+#    iterationCount: 10
 - Repair:
     transformationStrategy: proportional
     transformationConstant: 10
@@ -46,17 +46,17 @@ scenarios:
 # Specify the name of the tools to run.
 tools:
 #- allegro
-- blazegraph
-- drools5
-- drools6
-- emfapi
+#- blazegraph
+#- drools5
+#- drools6
+#- emfapi
 - emfincquery
 #- hawk
-#- iqdcore
-- jena
-- mysql
-- neo4j
-- sesame
+- iqdcore
+#- jena
+#- mysql
+#- neo4j
+#- sesame
 #- virtuoso
 
 # Optional arguments for the generator.
@@ -75,3 +75,6 @@ benchmark_optional_arguments:
   - inferencing
   emfincquery:
   - localsearch
+  iqdcore:
+  - - -checker
+    - RemoteOnly
