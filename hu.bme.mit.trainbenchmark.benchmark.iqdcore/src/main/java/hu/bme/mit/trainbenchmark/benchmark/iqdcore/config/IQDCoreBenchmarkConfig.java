@@ -84,12 +84,13 @@ public class IQDCoreBenchmarkConfig extends RDFBenchmarkConfig {
     public int getMessageSize() { return messageSize; }
 	@Override
 	public String getToolName() {
+		String name = IQDCORE;
 		if (isCPURestricted()) {
 			int coreCount = cpulist.split(",").length;
-			return String.format("IQDCore-%d", coreCount);
-		} else {
-			return "IQDCore";
+			name += String.format("-%d", coreCount);
 		}
+		name = name + checker.toString();
+		return name;
 	}
 
 }
