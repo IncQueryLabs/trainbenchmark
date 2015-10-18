@@ -23,6 +23,7 @@ import org.apache.commons.cli.ParseException;
 public class IQDCoreBenchmarkMain {
 
 	public static void main(String[] args) throws Exception {
+		Thread.sleep(10000); //wait for remote system to unquarantine us
 		final IQDCoreBenchmarkConfig benchmarkConfig = new IQDCoreBenchmarkConfig(args);
 		final BenchmarkRunner benchmarkLogic = new BenchmarkRunner(benchmarkConfig, new IQDCoreBenchmarkCase(benchmarkConfig));
 		benchmarkLogic.runBenchmark();
