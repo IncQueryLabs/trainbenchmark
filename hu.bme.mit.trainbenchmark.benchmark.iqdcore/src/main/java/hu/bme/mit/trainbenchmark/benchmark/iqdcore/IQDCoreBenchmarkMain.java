@@ -17,7 +17,6 @@ import java.io.IOException;
 import hu.bme.mit.trainbenchmark.benchmark.iqdcore.config.IQDCoreBenchmarkConfig;
 import hu.bme.mit.trainbenchmark.benchmark.rdf.RDFBenchmarkConfig;
 import hu.bme.mit.trainbenchmark.benchmark.scenarios.BenchmarkRunner;
-import kamon.Kamon;
 import org.apache.commons.cli.ParseException;
 
 public class IQDCoreBenchmarkMain {
@@ -27,7 +26,6 @@ public class IQDCoreBenchmarkMain {
 		final IQDCoreBenchmarkConfig benchmarkConfig = new IQDCoreBenchmarkConfig(args);
 		final BenchmarkRunner benchmarkLogic = new BenchmarkRunner(benchmarkConfig, new IQDCoreBenchmarkCase(benchmarkConfig));
 		benchmarkLogic.runBenchmark();
-		Kamon.shutdown();
 		return;
 	}
 
