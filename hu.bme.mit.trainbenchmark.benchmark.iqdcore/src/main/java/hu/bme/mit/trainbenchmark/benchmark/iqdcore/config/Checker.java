@@ -1,8 +1,10 @@
 package hu.bme.mit.trainbenchmark.benchmark.iqdcore.config;
 
 public enum Checker {
-	LOCAL(""), //
-	REMOTEONLY("RemoteOnly");
+	LOCAL(""),
+	REMOTEONLY("RemoteOnly"),
+	DISTRIBUTED("Distributed"),
+	DISTRIBUTEDSPLIT("DistributedSplit");
 
 	private String name;
 
